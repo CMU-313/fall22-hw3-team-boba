@@ -104,7 +104,21 @@ public class DocumentDao {
         } catch (NoResultException e) {
             return null;
         }
+        EntityManager em2 = ThreadLocalContext.get().getEntityManager();
+        StringBuilder sb3 = new StringBuilder("SELECT count(*) FROM T_REVIEW ;");
+
+        try {
+            Query q3 = em2.createNativeQuery(sb3.toString());
+            System.out.println(sb3.toString());
+            List<Object[]> l = q3.getResultList();
+            System.out.println("PLZZZZZZZZZZ ORWRKERKERJWKERJKEJRKWERER");
+            System.out.println(l);
+        } catch (NoResultException e) {
+            System.out.println("WEFWEFWEGWRGWTF?????");
+            return null;
+        }
         
+
         DocumentDto documentDto = new DocumentDto();
         int i = 0;
         documentDto.setId((String) o[i++]);
