@@ -28,7 +28,7 @@ public class Review implements Loggable{
      * Document ID.
      */
     @Column(name = "REV_IDDOC_C", nullable = false)
-    private String docId;
+    private String documentId;
     
     /**
      * User ID.
@@ -148,7 +148,7 @@ public class Review implements Loggable{
     public String toString() {
         return MoreObjects.toStringHelper(this)
                 .add("id", id)
-                .add("document id", docId)
+                .add("document id", documentId)
                 .add("user id", userId)
                 .add("gpa", gpa)
                 .add("research rating", researchRating)
@@ -160,6 +160,6 @@ public class Review implements Loggable{
 
     @Override
     public String toMessage() {
-        return docId;
+        return documentId;
     }
 }
