@@ -16,7 +16,7 @@ import com.google.common.base.MoreObjects;
  */
 @Entity
 @Table(name = "T_REVIEW")
-public class Review {
+public class Review implements Loggable{
     /**
      * Review ID.
      */
@@ -71,6 +71,12 @@ public class Review {
      */
     @Column(name = "REV_CREATEDATE_D", nullable = false)
     private Date createDate;
+
+    /**
+     * Deletion date.
+     */
+    @Column(name = "REV_DELETEDATE_D", nullable = false)
+    private Date deleteDate;
 
     public String getId() {
         return id;
@@ -128,6 +134,15 @@ public class Review {
         this.createDate = createDate;
     }
 
+    @Override
+    public Date getDeleteDate() {
+        return deleteDate;
+    }
+
+    public void setDeleteDate(Date deleteDate) {
+        this.deleteDate = deleteDate;
+    }
+
 
     @Override
     public String toString() {
@@ -141,5 +156,10 @@ public class Review {
                 .add("letter recommendation rating", letterRating)
                 .add("skills rating", skillsRating)
                 .toString();
+    }
+
+    @Override
+    public String toMessage() {
+        return docId;
     }
 }
