@@ -282,17 +282,32 @@ public class DocumentResource extends BaseResource {
 
         // Add Reviews
         ReviewDao reviewDao = new ReviewDao();
+        System.out.println("Step 1\n-----------------------------------------------");
+
         List<ReviewDto> reviewDtoList = reviewDao.getByDocumentId(documentId);
+        System.out.println("Step 2\n-----------------------------------------------");
+
         JsonArrayBuilder reviewList = Json.createArrayBuilder();
+        System.out.println("Step 3\n-----------------------------------------------");
+
         for (ReviewDto reviewDto : reviewDtoList) {
+            System.out.println("Step 4\n-----------------------------------------------");
             reviewList.add(Json.createObjectBuilder()
                 .add("gpa", reviewDto.getGpa())
                 .add("skills_rating", reviewDto.getSkillsRating())
                 .add("work_rating", reviewDto.getWorkRating())
                 .add("research_rating", reviewDto.getResearchRating())
                 .add("letter_rating", reviewDto.getLetterRating()));
-        }
+                System.out.print(reviewDto.getGpa());
+                System.out.print(reviewDto.getSkillsRating());
+                System.out.print(reviewDto.getWorkRating());
+                System.out.print(reviewDto.getResearchRating());
+                System.out.println(reviewDto.getLetterRating());
+            }
+        System.out.println("Step 5\n-----------------------------------------------");
+        
         document.add("reviews", reviewList);
+        System.out.println("Step 6\n-----------------------------------------------");
 
 
         return Response.ok().entity(document.build()).build();
@@ -874,8 +889,6 @@ public class DocumentResource extends BaseResource {
             @FormParam("metadata_value") List<String> metadataValueList,
             @FormParam("language") String language,
             @FormParam("create_date") String createDateStr,
-            /*Add parameter that has the review data
-            TODO, add logic for when uodating document regularly with no review and when there is review in the update*/
             @FormParam("review") List<Integer> reviewContent) {
         if (!authenticate()) {
             throw new ForbiddenClientException();
@@ -911,25 +924,28 @@ public class DocumentResource extends BaseResource {
             throw new NotFoundException();
         }
 
-        // Set up contents of review, values should be ordered in list as shown below
-        Review review = new Review();
-        try {
-            // createDate and ??? are taken at Dao
-            // set documentId ?
-            review.setGpa(reviewContent.remove(0));
-            review.setSkillsRating(reviewContent.remove(0));
-            review.setWorkRating(reviewContent.remove(0));
-            review.setResearchRating(reviewContent.remove(0));
-            review.setLetterRating(reviewContent.remove(0));
-            assert(reviewContent.size() == 0);
-        } catch(Exception e) {
-            throw new ServerException("ReviewError", "Incorrect review data format", e);
-        }
-        
-        // Create new reviewDao and save review
-        ReviewDao reviewDao = new ReviewDao();
-        reviewDao.create(review, principal.getId());
+        reviewContent = Arrays.asList(1,2,3,4,5);
+        if (reviewContent != null) {
+            System.out.println("Pre array" + reviewContent.toString());
+            // Set up contents of review, values should be ordered in list as shown below
+            Review review = new Review();
+            try {
+                // userId, documentId, and createDate are set in reviewDao
+                review.setGpa(reviewContent.remove(0));
+                review.setSkillsRating(reviewContent.remove(0));
+                review.setWorkRating(reviewContent.remove(0));
+                review.setResearchRating(reviewContent.remove(0));
+                review.setLetterRating(reviewContent.remove(0));
+                assert(reviewContent.size() == 0);
+            } catch(Exception e) {
+                throw new ServerException("ReviewError", "Incorrect review data format", e);
+            }
+            System.out.println("Post array" + reviewContent.toString());
 
+            // Create new reviewDao and save review
+            ReviewDao reviewDao = new ReviewDao();
+            reviewDao.create(review, principal.getId(), document.getId());
+        }
 
         // Update the document
         document.setTitle(title);
