@@ -22,21 +22,30 @@ public class ReviewDao {
      * @param userId User ID
      * @return New ID
      */
-    public String create(Review review, String userId, String documentId) {
+    public String create(Review review, String userId/*, String documentId*/) {
         // Create the UUID
+        System.out.println("set id sad");
         review.setId(UUID.randomUUID().toString());
 
         // Create the review
+        
         EntityManager em = ThreadLocalContext.get().getEntityManager();
+        System.out.println("create date sad");
         review.setCreateDate(new Date());
+        System.out.println("create date sad 2");
         em.persist(review);
 
         // Create audit log
+        System.out.println("audit log sad");
         AuditLogUtil.create(review, AuditLogType.CREATE, userId);
 
         // Set document ID and user ID
+        /* 
+        System.out.println("set user id sad");
         review.setUserId(userId);
+        System.out.println("set document id sad");
         review.setDocumentId(documentId);
+        */
 
         return review.getId();
     }

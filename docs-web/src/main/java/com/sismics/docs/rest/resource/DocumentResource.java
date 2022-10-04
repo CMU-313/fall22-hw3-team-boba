@@ -309,7 +309,6 @@ public class DocumentResource extends BaseResource {
         document.add("reviews", reviewList);
         System.out.println("Step 6\n-----------------------------------------------");
 
-
         return Response.ok().entity(document.build()).build();
     }
     
@@ -924,14 +923,20 @@ public class DocumentResource extends BaseResource {
             throw new NotFoundException();
         }
 
-        reviewContent = Arrays.asList(1,2,3,4,5);
+        reviewContent = new ArrayList<>();
+        reviewContent.add(1);
+        reviewContent.add(2);
+        reviewContent.add(3);
+        reviewContent.add(4);
+        reviewContent.add(5);
         if (reviewContent != null) {
-            System.out.println("Pre array" + reviewContent.toString());
             // Set up contents of review, values should be ordered in list as shown below
             Review review = new Review();
             try {
                 // userId, documentId, and createDate are set in reviewDao
-                review.setGpa(reviewContent.remove(0));
+                review.setDocumentId(document.getId());
+                review.setUserId(principal.getId());
+                review.setGpa(reviewContent.get(0));
                 review.setSkillsRating(reviewContent.remove(0));
                 review.setWorkRating(reviewContent.remove(0));
                 review.setResearchRating(reviewContent.remove(0));
@@ -940,11 +945,11 @@ public class DocumentResource extends BaseResource {
             } catch(Exception e) {
                 throw new ServerException("ReviewError", "Incorrect review data format", e);
             }
-            System.out.println("Post array" + reviewContent.toString());
 
             // Create new reviewDao and save review
             ReviewDao reviewDao = new ReviewDao();
-            reviewDao.create(review, principal.getId(), document.getId());
+            reviewDao.create(review, principal.getId());
+
         }
 
         // Update the document
