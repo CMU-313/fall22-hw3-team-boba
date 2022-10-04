@@ -280,14 +280,14 @@ public class DocumentResource extends BaseResource {
 
         // Add Reviews
         ReviewDao reviewDao = new ReviewDao();
-        List<ReviewDto> reviewDtoList = reviewDao.getDocumentId(documentId);
+        List<ReviewDto> reviewDtoList = reviewDao.getByDocumentId(documentId);
         JsonArrayBuilder reviewList = Json.createArrayBuilder();
         for (ReviewDto reviewDto : reviewDtoList) {
             reviewList.add(Json.createObjectBuilder()
                 .add("gpa", reviewDto.getGpa())
                 .add("skills_rating", reviewDto.getSkillsRating())
                 .add("work_rating", reviewDto.getWorkRating())
-                .add("research_rating", reviewDto.getReserachRating())
+                .add("research_rating", reviewDto.getResearchRating())
                 .add("letter_rating", reviewDto.getLetterRating()));
         }
         document.add("reviews", reviewList);
