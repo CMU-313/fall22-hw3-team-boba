@@ -278,6 +278,21 @@ public class DocumentResource extends BaseResource {
             document.add("files", filesArrayBuilder);
         }
 
+        // Add Reviews
+        ReviewDao reviewDao = new ReviewDao();
+        List<ReviewDto> reviewDtoList = reviewDao.getDocumentId(documentId);
+        JsonArrayBuilder reviewList = Json.createArrayBuilder();
+        for (ReviewDto reviewDto : reviewDtoList) {
+            reviewList.add(Json.createObjectBuilder()
+                .add("gpa", reviewDto.getGpa())
+                .add("skills_rating", reviewDto.getSkillsRating())
+                .add("work_rating", reviewDto.getWorkRating())
+                .add("research_rating", reviewDto.getReserachRating())
+                .add("letter_rating", reviewDto.getLetterRating()));
+        }
+        document.add("reviews", reviewList);
+
+
         return Response.ok().entity(document.build()).build();
     }
     
@@ -856,7 +871,10 @@ public class DocumentResource extends BaseResource {
             @FormParam("metadata_id") List<String> metadataIdList,
             @FormParam("metadata_value") List<String> metadataValueList,
             @FormParam("language") String language,
-            @FormParam("create_date") String createDateStr) {
+            @FormParam("create_date") String createDateStr,
+            /*Add parameter that has the review data
+            TODO, add logic for when uodating document regularly with no review and when there is review in the update*/
+            @FormParam("review") List<String> review) {
         if (!authenticate()) {
             throw new ForbiddenClientException();
         }
@@ -890,7 +908,7 @@ public class DocumentResource extends BaseResource {
         if (document == null) {
             throw new NotFoundException();
         }
-        
+
         // Update the document
         document.setTitle(title);
         document.setDescription(description);
