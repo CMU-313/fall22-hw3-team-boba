@@ -22,7 +22,7 @@ public class ReviewDao {
      * @param userId User ID
      * @return New ID
      */
-    public String create(Review review, String userId) {
+    public String create(Review review, String userId, String documentId) {
         // Create the UUID
         review.setId(UUID.randomUUID().toString());
 
@@ -33,6 +33,10 @@ public class ReviewDao {
 
         // Create audit log
         AuditLogUtil.create(review, AuditLogType.CREATE, userId);
+
+        // Set document ID and user ID
+        review.setUserId(userId);
+        review.setDocumentId(documentId);
 
         return review.getId();
     }
