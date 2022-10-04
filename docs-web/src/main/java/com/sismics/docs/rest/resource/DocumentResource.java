@@ -18,6 +18,7 @@ import com.sismics.docs.core.event.FileDeletedAsyncEvent;
 import com.sismics.docs.core.model.context.AppContext;
 import com.sismics.docs.core.model.jpa.Document;
 import com.sismics.docs.core.model.jpa.File;
+import com.sismics.docs.core.model.jpa.Review;
 import com.sismics.docs.core.model.jpa.User;
 import com.sismics.docs.core.util.*;
 import com.sismics.docs.core.util.jpa.PaginatedList;
@@ -50,6 +51,7 @@ import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
+import javax.persistence.NoResultException;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
@@ -280,14 +282,14 @@ public class DocumentResource extends BaseResource {
 
         // Add Reviews
         ReviewDao reviewDao = new ReviewDao();
-        List<ReviewDto> reviewDtoList = reviewDao.getDocumentId(documentId);
+        List<ReviewDto> reviewDtoList = reviewDao.getByDocumentId(documentId);
         JsonArrayBuilder reviewList = Json.createArrayBuilder();
         for (ReviewDto reviewDto : reviewDtoList) {
             reviewList.add(Json.createObjectBuilder()
                 .add("gpa", reviewDto.getGpa())
                 .add("skills_rating", reviewDto.getSkillsRating())
                 .add("work_rating", reviewDto.getWorkRating())
-                .add("research_rating", reviewDto.getReserachRating())
+                .add("research_rating", reviewDto.getResearchRating())
                 .add("letter_rating", reviewDto.getLetterRating()));
         }
         document.add("reviews", reviewList);
@@ -874,7 +876,7 @@ public class DocumentResource extends BaseResource {
             @FormParam("create_date") String createDateStr,
             /*Add parameter that has the review data
             TODO, add logic for when uodating document regularly with no review and when there is review in the update*/
-            @FormParam("review") List<String> review) {
+            @FormParam("review") List<Integer> reviewContent) {
         if (!authenticate()) {
             throw new ForbiddenClientException();
         }
@@ -908,6 +910,26 @@ public class DocumentResource extends BaseResource {
         if (document == null) {
             throw new NotFoundException();
         }
+
+        // Set up contents of review, values should be ordered in list as shown below
+        Review review = new Review();
+        try {
+            // createDate and ??? are taken at Dao
+            // set documentId ?
+            review.setGpa(reviewContent.remove(0));
+            review.setSkillsRating(reviewContent.remove(0));
+            review.setWorkRating(reviewContent.remove(0));
+            review.setResearchRating(reviewContent.remove(0));
+            review.setLetterRating(reviewContent.remove(0));
+            assert(reviewContent.size() == 0);
+        } catch(Exception e) {
+            throw new ServerException("ReviewError", "Incorrect review data format", e);
+        }
+        
+        // Create new reviewDao and save review
+        ReviewDao reviewDao = new ReviewDao();
+        reviewDao.create(review, principal.getId());
+
 
         // Update the document
         document.setTitle(title);
