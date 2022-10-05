@@ -282,11 +282,7 @@ public class DocumentResource extends BaseResource {
 
         // Add Reviews
         ReviewDao reviewDao = new ReviewDao();
-        System.out.println("Step 1\n-----------------------------------------------");
-
         List<ReviewDto> reviewDtoList = reviewDao.getByDocumentId(documentId);
-        System.out.println("Step 2\n-----------------------------------------------");
-
         JsonArrayBuilder reviewList = Json.createArrayBuilder();
         System.out.println("Step 3\n-----------------------------------------------");
 

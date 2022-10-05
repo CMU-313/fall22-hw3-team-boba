@@ -105,7 +105,7 @@ public class DocumentDao {
             return null;
         }
         EntityManager em2 = ThreadLocalContext.get().getEntityManager();
-        StringBuilder sb3 = new StringBuilder("SELECT count(*) FROM T_REVIEW ;");
+        StringBuilder sb3 = new StringBuilder("SELECT r.REV_CREATEDATE_D FROM T_REVIEW r ;");
 
         try {
             Query q3 = em2.createNativeQuery(sb3.toString());

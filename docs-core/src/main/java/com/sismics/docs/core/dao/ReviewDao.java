@@ -22,7 +22,7 @@ public class ReviewDao {
      * @param userId User ID
      * @return New ID
      */
-    public String create(Review review, String userId/*, String documentId*/) {
+    public String create(Review review, String userId, String documentId) {
         // Create the UUID
         System.out.println("set id sad");
         review.setId(UUID.randomUUID().toString());
@@ -40,12 +40,8 @@ public class ReviewDao {
         AuditLogUtil.create(review, AuditLogType.CREATE, userId);
 
         // Set document ID and user ID
-        /* 
-        System.out.println("set user id sad");
         review.setUserId(userId);
-        System.out.println("set document id sad");
         review.setDocumentId(documentId);
-        */
 
         return review.getId();
     }
@@ -58,8 +54,8 @@ public class ReviewDao {
      */
     public List<ReviewDto> getByDocumentId(String documentId) {
         EntityManager em = ThreadLocalContext.get().getEntityManager();
-        StringBuilder sb = new StringBuilder("select r.REV_ID_C, r.REV_GPA_N, r.REV_SKILLS_N, r.REV_WEX_N, r.REV_REX_N, r.REV_LOR_N, from T_REVIEW r");
-        sb.append(" where r.REV_IDDOC_C = :documentId and c.COM_DELETEDATE_D is null ");
+        StringBuilder sb = new StringBuilder("select r.REV_ID_C, r.REV_GPA_N, r.REV_SKILLS_N, r.REV_WEX_N, r.REV_REX_N, r.REV_LOR_N from T_REVIEW r");
+        sb.append(" where r.REV_IDDOC_C = :documentId and r.REV_DELETEDATE_D is null ");
         sb.append(" order by r.REV_CREATEDATE_D asc ");
         Query q = em.createNativeQuery(sb.toString());
         q.setParameter("documentId", documentId);

@@ -75,7 +75,7 @@ public class Review implements Loggable{
     /**
      * Deletion date.
      */
-    @Column(name = "REV_DELETEDATE_D"/*, nullable = false*/)
+    @Column(name = "REV_DELETEDATE_D")
     private Date deleteDate;
 
     public String getId() {
