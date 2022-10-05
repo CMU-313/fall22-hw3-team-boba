@@ -284,27 +284,25 @@ public class DocumentResource extends BaseResource {
         ReviewDao reviewDao = new ReviewDao();
         List<ReviewDto> reviewDtoList = reviewDao.getByDocumentId(documentId);
         JsonArrayBuilder reviewList = Json.createArrayBuilder();
-        System.out.println("Step 3\n-----------------------------------------------");
 
         for (ReviewDto reviewDto : reviewDtoList) {
-            System.out.println("Step 4\n-----------------------------------------------");
             reviewList.add(Json.createObjectBuilder()
                 .add("gpa", reviewDto.getGpa())
                 .add("skills_rating", reviewDto.getSkillsRating())
                 .add("work_rating", reviewDto.getWorkRating())
                 .add("research_rating", reviewDto.getResearchRating())
                 .add("letter_rating", reviewDto.getLetterRating()));
+                // start printing review values
+                System.out.print("Review: ");
                 System.out.print(reviewDto.getGpa());
                 System.out.print(reviewDto.getSkillsRating());
                 System.out.print(reviewDto.getWorkRating());
                 System.out.print(reviewDto.getResearchRating());
                 System.out.println(reviewDto.getLetterRating());
             }
-        System.out.println("Step 5\n-----------------------------------------------");
         
         document.add("reviews", reviewList);
-        System.out.println("Step 6\n-----------------------------------------------");
-
+        
         return Response.ok().entity(document.build()).build();
     }
     
@@ -919,12 +917,9 @@ public class DocumentResource extends BaseResource {
             throw new NotFoundException();
         }
 
+        // test review content
         reviewContent = new ArrayList<>();
-        reviewContent.add(1);
-        reviewContent.add(2);
-        reviewContent.add(3);
-        reviewContent.add(4);
-        reviewContent.add(5);
+        Collections.addAll(reviewContent, 6,9,4,2,0);
         if (reviewContent != null) {
             // Set up contents of review, values should be ordered in list as shown below
             Review review = new Review();
@@ -932,7 +927,7 @@ public class DocumentResource extends BaseResource {
                 // userId, documentId, and createDate are set in reviewDao
                 review.setDocumentId(document.getId());
                 review.setUserId(principal.getId());
-                review.setGpa(reviewContent.get(0));
+                review.setGpa(reviewContent.remove(0));
                 review.setSkillsRating(reviewContent.remove(0));
                 review.setWorkRating(reviewContent.remove(0));
                 review.setResearchRating(reviewContent.remove(0));
@@ -944,8 +939,7 @@ public class DocumentResource extends BaseResource {
 
             // Create new reviewDao and save review
             ReviewDao reviewDao = new ReviewDao();
-            reviewDao.create(review, principal.getId());
-
+            reviewDao.create(review, principal.getId(), document.getId());
         }
 
         // Update the document
