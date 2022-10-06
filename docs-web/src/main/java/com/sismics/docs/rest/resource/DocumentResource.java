@@ -944,7 +944,7 @@ public class DocumentResource extends BaseResource {
 
             // Create new reviewDao and save review
             ReviewDao reviewDao = new ReviewDao();
-            reviewDao.create(review, principal.getId());
+            reviewDao.create(review, principal.getId(),document.getId());
 
         }
 
