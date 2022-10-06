@@ -918,9 +918,9 @@ public class DocumentResource extends BaseResource {
         }
 
         // test review content
-        reviewContent = new ArrayList<>();
-        Collections.addAll(reviewContent, 6,9,4,2,0);
-        if (reviewContent != null) {
+        // reviewContent = new ArrayList<>();
+        // Collections.addAll(reviewContent, 6,9,4,2,0);
+        if ( reviewContent.size() > 0 && reviewContent != null) {
             // Set up contents of review, values should be ordered in list as shown below
             Review review = new Review();
             try {
