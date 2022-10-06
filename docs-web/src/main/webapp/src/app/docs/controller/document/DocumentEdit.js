@@ -82,6 +82,16 @@ angular.module('docs').controller('DocumentEdit', function($rootScope, $scope, $
     }
   };
 
+  $scope.addReview = function () {
+    var document = angular.copy($scope.document);
+    document.review.gpa = parseInt(document.review.gpa);
+    document.review.skills_rating = parseInt(document.review.skills_rating);
+    document.review.work_rating = parseInt(document.review.work_rating);
+    document.review.research_rating = parseInt(document.review.research_rating);
+    document.review.letter_rating = parseInt(document.review.letter_rating);
+    document.review = [document.review.gpa, document.review.skills_rating, document.review.work_rating, document.review.research_rating, document.review.letter_rating];
+  }
+
   /**
    * Edit a document.
    * Workflow:
@@ -95,7 +105,7 @@ angular.module('docs').controller('DocumentEdit', function($rootScope, $scope, $
     if (document.create_date instanceof Date) {
       document.create_date = document.create_date.getTime();
     }
-    
+      
     // Extract ids from tags
     document.tags = _.pluck(document.tags, 'id');
 
