@@ -56,6 +56,13 @@ angular.module('docs').controller('DocumentView', function($scope, $rootScope, $
         });
     };
 
+    $scope.cancel = function() {
+        $uibModal.close({
+            templateUrl: 'partial/docs/document.add.review.html',
+            controller: 'DocumentEdit'
+        });
+    };
+
     /**
      * Delete a document.
      */
