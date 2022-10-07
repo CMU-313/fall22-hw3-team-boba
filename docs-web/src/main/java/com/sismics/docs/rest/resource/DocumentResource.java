@@ -18,6 +18,7 @@ import com.sismics.docs.core.event.FileDeletedAsyncEvent;
 import com.sismics.docs.core.model.context.AppContext;
 import com.sismics.docs.core.model.jpa.Document;
 import com.sismics.docs.core.model.jpa.File;
+import com.sismics.docs.core.model.jpa.Review;
 import com.sismics.docs.core.model.jpa.User;
 import com.sismics.docs.core.util.*;
 import com.sismics.docs.core.util.jpa.PaginatedList;
@@ -50,6 +51,7 @@ import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
+import javax.persistence.NoResultException;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
@@ -278,6 +280,29 @@ public class DocumentResource extends BaseResource {
             document.add("files", filesArrayBuilder);
         }
 
+        // Add Reviews
+        ReviewDao reviewDao = new ReviewDao();
+        List<ReviewDto> reviewDtoList = reviewDao.getByDocumentId(documentId);
+        JsonArrayBuilder reviewList = Json.createArrayBuilder();
+
+        for (ReviewDto reviewDto : reviewDtoList) {
+            reviewList.add(Json.createObjectBuilder()
+                .add("gpa", reviewDto.getGpa())
+                .add("skills_rating", reviewDto.getSkillsRating())
+                .add("work_rating", reviewDto.getWorkRating())
+                .add("research_rating", reviewDto.getResearchRating())
+                .add("letter_rating", reviewDto.getLetterRating()));
+                // start printing review values
+                System.out.print("Review: ");
+                System.out.print(reviewDto.getGpa());
+                System.out.print(reviewDto.getSkillsRating());
+                System.out.print(reviewDto.getWorkRating());
+                System.out.print(reviewDto.getResearchRating());
+                System.out.println(reviewDto.getLetterRating());
+            }
+        
+        document.add("reviews", reviewList);
+        
         return Response.ok().entity(document.build()).build();
     }
     
@@ -856,7 +881,8 @@ public class DocumentResource extends BaseResource {
             @FormParam("metadata_id") List<String> metadataIdList,
             @FormParam("metadata_value") List<String> metadataValueList,
             @FormParam("language") String language,
-            @FormParam("create_date") String createDateStr) {
+            @FormParam("create_date") String createDateStr,
+            @FormParam("review") List<Integer> reviewContent) {
         if (!authenticate()) {
             throw new ForbiddenClientException();
         }
@@ -890,7 +916,32 @@ public class DocumentResource extends BaseResource {
         if (document == null) {
             throw new NotFoundException();
         }
-        
+
+        // test review content
+        // reviewContent = new ArrayList<>();
+        // Collections.addAll(reviewContent, 6,9,4,2,0);
+        if ( reviewContent.size() > 0 && reviewContent != null) {
+            // Set up contents of review, values should be ordered in list as shown below
+            Review review = new Review();
+            try {
+                // userId, documentId, and createDate are set in reviewDao
+                review.setDocumentId(document.getId());
+                review.setUserId(principal.getId());
+                review.setGpa(reviewContent.remove(0));
+                review.setSkillsRating(reviewContent.remove(0));
+                review.setWorkRating(reviewContent.remove(0));
+                review.setResearchRating(reviewContent.remove(0));
+                review.setLetterRating(reviewContent.remove(0));
+                assert(reviewContent.size() == 0);
+            } catch(Exception e) {
+                throw new ServerException("ReviewError", "Incorrect review data format", e);
+            }
+
+            // Create new reviewDao and save review
+            ReviewDao reviewDao = new ReviewDao();
+            reviewDao.create(review, principal.getId(), document.getId());
+        }
+
         // Update the document
         document.setTitle(title);
         document.setDescription(description);
