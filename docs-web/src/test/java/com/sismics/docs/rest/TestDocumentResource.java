@@ -2,7 +2,9 @@ package com.sismics.docs.rest;
 
 import com.google.common.io.ByteStreams;
 import com.google.common.io.Resources;
+import com.google.common.collect.Lists;
 import com.sismics.docs.core.util.DirectoryUtil;
+import com.sismics.docs.rest.resource.DocumentResource;
 import com.sismics.util.filter.TokenBasedSecurityFilter;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
@@ -298,7 +300,12 @@ public class TestDocumentResource extends BaseJerseyTest {
                         .param("coverage", "France")
                         .param("language", "eng")
                         .param("rights", "All Rights Reserved")
-                        .param("tags", tag3Id)), JsonObject.class);
+                        .param("tags", tag3Id)
+                        .param("review", "5")
+                        .param("review", "4")
+                        .param("review", "3")
+                        .param("review", "2")
+                        .param("review", "1")), JsonObject.class);
         Assert.assertEquals(document1Id, json.getString("id"));
         
         // Update document 2
