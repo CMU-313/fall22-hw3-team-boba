@@ -42,7 +42,6 @@
         <thead>
             <tr>
                 <th width="3%"></th>
-                <th>Reviewer Name</th>
                 <th>GPA</th>
                 <th>Skills Rating</th>
                 <th>Work Rating</th>
@@ -51,21 +50,16 @@
                 <th></th>
             </tr>
         </thead>
-        <tbody ui-sortable="fileSortableOptions" ng-model="files">
-            <tr ng-repeat="file in files" ng-class="{ 'active': openedFile.id == file.id }">
-                <td class="pointer" ng-click="openFile(file, $event)">
-                    <div class="thumbnail-list">
-                        <img ng-src="../api/file/{{ file.id }}/data?size=thumb" />
-                    </div>
-                </td>
-                <td class="pointer" ng-click="openFile(file, $event)">
-                    {{ file.name }}
-                    <span class="fas fa-spin fa-circle-notch" ng-show="file.processing" uib-tooltip="{{ 'document.view.content.file_processing_indicator' | translate }}"></span>
-                </td>
-                <td>{{ file.mimetype }}</td>
-                <td>{{ file.size | filesize }}</td>
-                <td>v{{ file.version + 1 }}.0</td>
-                <td ng-show="document.writable">
+        <tbody ng-model="document.reviews">
+            <tr ng-repeat="review in document.reviews">
+                <td width="3%" class="text-center" header-class="text-center"></td>
+                <td class="text-center" header-class="text-center">{{ review.gpa }}</td>
+                <td class="text-center" header-class="text-center">{{ review.skills_rating }}</td>
+                <td class="text-center" header-class="text-center">{{ review.work_rating }}</td>
+                <td class="text-center" header-class="text-center">{{ review.research_rating}}</td>
+                <td class="text-center" header-class="text-center">{{ review.letter_rating}}</td>
+
+                <!-- <td ng-show="document.writable">
                     <div uib-dropdown>
                         <button class="btn btn-default" uib-dropdown-toggle>
             <span class="fas fa-ellipsis-v"></span>
@@ -106,7 +100,7 @@
                             </li>
                         </ul>
                     </div>
-                </td>
+                </td> -->
             </tr>
         </tbody>
     </table>
@@ -117,7 +111,7 @@
 </div>
 
 <p class="text-center">
-    <button class="btn btn-primary" ngf-select ngf-change="fileDropped($files, $event)" input-file-multiple="multiple" ngf-multiple="true">
+    <button class="btn btn-primary" ng-click="writeReview()">
     {{ 'document.view.review.add_reviews' | translate }}
   </button>
 </p>

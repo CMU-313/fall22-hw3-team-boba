@@ -286,6 +286,7 @@ public class DocumentResource extends BaseResource {
         JsonArrayBuilder reviewList = Json.createArrayBuilder();
 
         for (ReviewDto reviewDto : reviewDtoList) {
+            System.out.println("Document Reviews: ");
             reviewList.add(Json.createObjectBuilder()
                 .add("gpa", reviewDto.getGpa())
                 .add("skills_rating", reviewDto.getSkillsRating())
@@ -882,7 +883,7 @@ public class DocumentResource extends BaseResource {
             @FormParam("metadata_value") List<String> metadataValueList,
             @FormParam("language") String language,
             @FormParam("create_date") String createDateStr,
-            @FormParam("review") List<Integer> reviewContent) {
+            @FormParam("reviewList") List<Integer> reviewContent) {
         if (!authenticate()) {
             throw new ForbiddenClientException();
         }
@@ -920,7 +921,9 @@ public class DocumentResource extends BaseResource {
         // test review content
         // reviewContent = new ArrayList<>();
         // Collections.addAll(reviewContent, 6,9,4,2,0);
+        System.out.println("reviewContent" + reviewContent.toString());
         if ( reviewContent.size() > 0 && reviewContent != null) {
+            System.out.println("YEET3");
             // Set up contents of review, values should be ordered in list as shown below
             Review review = new Review();
             try {
