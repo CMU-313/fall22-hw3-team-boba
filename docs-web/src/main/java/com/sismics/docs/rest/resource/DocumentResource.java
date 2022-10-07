@@ -882,7 +882,8 @@ public class DocumentResource extends BaseResource {
             @FormParam("metadata_value") List<String> metadataValueList,
             @FormParam("language") String language,
             @FormParam("create_date") String createDateStr,
-            @FormParam("review") List<Integer> reviewContent) {
+            @FormParam("reviewList") List<Integer> reviewContent) {
+
         if (!authenticate()) {
             throw new ForbiddenClientException();
         }
